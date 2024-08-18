@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+        #contenedorFile{
+            width: 60%;
+            margin: 0 auto;
+            border: 2px dashed #928f8f;
+            background: #eeebeb;
+            height: 80px;
+            align-content: center;
+            font-size: 26px;
+            color: #bbbaba;
+            align-items: center;
+            display: flex;
+            font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            justify-content: center;
+        }
+        #imgs-files{
+            display: flex;
+            flex-direction: row;
+           
+        }
+        #imgs-files img{
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <div id="imgs-files">
+
+    </div>
+    <label>
+        <div id="contenedorFile">Click agregar archivo</div>
+        <input type="file" id="file" name="file" multiple hidden>
+    </label>
+    <script>
+        contenedorFile.addEventListener("dragenter", (event) =>{
+            event.preventDefault();
+            console.log("Ingresó")
+            event.target.textContent = "Bien, soltar!"
+           
+        })
+        contenedorFile.addEventListener("dragleave", (event) =>{
+            console.log("Salió")
+            event.target.textContent = "Click agregar archivo"
+        })
+        contenedorFile.addEventListener("drop", (event) =>{
+            event.preventDefault();
+            console.log("Soltó")
+            console.log(event.dataTransfer.types)
+
+            const archivos = event.dataTransfer.files
+            
+            LeerArchivo(archivos, true)
+  
+        })
+        contenedorFile.addEventListener("dragover", (event) =>{
+            event.preventDefault();  // Necesario para permitir el drop
+        })
+
+        file.addEventListener("change", (event)=>{
+            LeerArchivo(event.target.files)
+        })
+
+    
+    function LeerArchivo (files, descarga = false){
+        const imgs = document.querySelector("#imgs-files")
+        for(let i=0; i<files.length; i++){
+        const reader = new FileReader()
+        reader.onload = function(eventReader){
+            //Preview en mi pagina
+            const result = eventReader.target.result
+            const img = document.createElement("img")
+            img.src = result
+            imgs.appendChild(img)
+            if(descarga){
+                const a = document.createElement("a")
+            a.href = result
+            a.download = files[i].name
+            a.click()
+            }
+        };
+        reader.readAsDataURL(files[i])
+        }
+    }
+    </script>
+</body>
+</html>
+
